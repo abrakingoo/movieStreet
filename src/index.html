@@ -2,12 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>MyAngularApp</title>
+  <title>Movie Street - Your Ultimate Entertainment Hub</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="description" content="Discover trending movies and TV shows on Movie Street">
+  <meta name="theme-color" content="#4ecdc4">
+  
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Movie Street">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@moviestreet">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Movie Street",
+    "description": "Discover trending movies and TV shows",
+    "url": "https://moviestreet.app"
+  }
+  </script>
+  
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
 </head>
 <body>
   <app-root></app-root>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>
