@@ -13,6 +13,44 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 /**
+ * Security Headers Middleware
+ */
+app.use((req, res, next) => {
+  // Content Security Policy
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://s.ytimg.com; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data: https: http:; " +
+    "font-src 'self' data:; " +
+    "connect-src 'self' https://api.themoviedb.org https://www.youtube.com; " +
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; " +
+    "media-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; " +
+    "object-src 'none'; " +
+    "base-uri 'self'; " +
+    "form-action 'self';"
+  );
+  
+  // Prevent clickjacking
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  
+  // Prevent MIME type sniffing
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // Enable XSS protection
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  
+  // Referrer Policy
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Permissions Policy
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  
+  next();
+});
+
+/**
  * Example Express Rest API endpoints can be defined here.
  * Uncomment and define endpoints as necessary.
  *
