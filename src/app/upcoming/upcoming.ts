@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { MovieService } from '../services/movie';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -23,6 +24,7 @@ interface UpcomingMovie {
 export class UpcomingComponent implements OnInit {
   private movieService = inject(MovieService);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   upcomingMovies = signal<UpcomingMovie[]>([]);
   groupedByMonth = signal<{ month: string, movies: UpcomingMovie[] }[]>([]);
@@ -48,7 +50,7 @@ export class UpcomingComponent implements OnInit {
         
         this.upcomingMovies.set(futureMovies);
         this.groupByMonth(futureMovies);
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = isPlatformBrowser(this.platformId) && window.innerWidth <= 768;
         this.selectedView.set(isMobile ? 'list' : (futureMovies.length > 5 ? 'calendar' : 'list'));
         this.isLoading.set(false);
       },
