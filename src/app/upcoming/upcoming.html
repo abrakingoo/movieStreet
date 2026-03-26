@@ -1,0 +1,83 @@
+<div class="upcoming_page">
+    <div class="page_header">
+        <h1>Upcoming Releases</h1>
+        <button class="view_toggle" (click)="toggleView()">
+            {{selectedView() === 'calendar' ? 'List View' : 'Calendar View'}}
+        </button>
+    </div>
+
+    @if(isLoading()) {
+        <div class="skeleton_grid">
+            @for(i of [1,2,3,4,5,6,7,8]; track i) {
+                <div class="skeleton_card">
+                    <div class="skeleton_poster"></div>
+                    <div class="skeleton_info">
+                        <div class="skeleton_title"></div>
+                        <div class="skeleton_text"></div>
+                        <div class="skeleton_text"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    } @else if(upcomingMovies().length === 0) {
+        <div class="empty_state">
+            <p>No upcoming releases found</p>
+        </div>
+    } @else {
+        @if(selectedView() === 'calendar') {
+            <div class="calendar_view">
+                @for(group of groupedByMonth(); track group.month) {
+                    <div class="month_section">
+                        <h2 class="month_title">{{group.month}}</h2>
+                        <div class="movies_grid">
+                            @for(movie of group.movies; track movie.id) {
+                                <div class="movie_card" (click)="viewDetails(movie)">
+                                    @if(movie.poster_path) {
+                                        <img [src]="'https://image.tmdb.org/t/p/w780' + movie.poster_path" [alt]="movie.title">
+                                    } @else {
+                                        <div class="no_poster">No Image</div>
+                                    }
+                                    <div class="movie_info">
+                                        <h3>{{movie.title}}</h3>
+                                        <p class="release_date">{{formatDate(movie.release_date)}}</p>
+                                        <div class="countdown">
+                                            @if(getDaysUntil(movie.release_date) === 0) {
+                                                <span class="today">Today</span>
+                                            } @else if(getDaysUntil(movie.release_date) === 1) {
+                                                <span class="tomorrow">Tomorrow</span>
+                                            } @else {
+                                                <span class="days">{{getDaysUntil(movie.release_date)}} days</span>
+                                            }
+                                        </div>
+                                        <div class="rating">{{movie.vote_average.toFixed(1)}}</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        } @else {
+            <div class="list_view">
+                @for(movie of upcomingMovies(); track movie.id) {
+                    <div class="list_item" (click)="viewDetails(movie)">
+                        @if(movie.poster_path) {
+                            <img [src]="'https://image.tmdb.org/t/p/w342' + movie.poster_path" [alt]="movie.title">
+                        } @else {
+                            <div class="list_poster">No Image</div>
+                        }
+                        <div class="list_info">
+                            <h3>{{movie.title}}</h3>
+                            <p>{{movie.overview}}</p>
+                        </div>
+                        <div class="list_meta">
+                            <span class="release_date">{{formatDate(movie.release_date)}}</span>
+                            <span class="countdown_badge">{{getDaysUntil(movie.release_date)}} days</span>
+                            <span class="rating">{{movie.vote_average.toFixed(1)}}</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>

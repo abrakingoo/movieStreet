@@ -1,0 +1,75 @@
+<div class="trending_page">
+    <h1 class="page_title">Trending Now</h1>
+
+    <section class="category_section">
+        <div class="section_header">
+            <h2>Movies</h2>
+            <a routerLink="/movies" class="view_more">View More →</a>
+        </div>
+        <div class="content_row">
+            @for(movie of movies(); track movie.id){
+                <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: movie }"></ng-container>
+            }
+        </div>
+    </section>
+
+    <section class="category_section">
+        <div class="section_header">
+            <h2>TV Series</h2>
+            <a routerLink="/series" class="view_more">View More →</a>
+        </div>
+        <div class="content_row">
+            @for(show of series(); track show.id){
+                <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: show }"></ng-container>
+            }
+        </div>
+    </section>
+
+    <section class="category_section">
+        <div class="section_header">
+            <h2>Animation</h2>
+            <a routerLink="/animation" class="view_more">View More →</a>
+        </div>
+        <div class="content_row">
+            @for(item of animation(); track item.id){
+                <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"></ng-container>
+            }
+        </div>
+    </section>
+
+    <section class="category_section">
+        <div class="section_header">
+            <h2>K-Drama</h2>
+            <a routerLink="/kdrama" class="view_more">View More →</a>
+        </div>
+        <div class="content_row">
+            @for(show of kdrama(); track show.id){
+                <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: show }"></ng-container>
+            }
+        </div>
+    </section>
+
+    <section class="category_section">
+        <div class="section_header">
+            <h2>Anime</h2>
+            <a routerLink="/anime" class="view_more">View More →</a>
+        </div>
+        <div class="content_row">
+            @for(show of anime(); track show.id){
+                <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: show }"></ng-container>
+            }
+        </div>
+    </section>
+</div>
+
+<ng-template #cardTemplate let-item>
+    <div class="content_card" (click)="viewDetails(item)">
+        <button class="bookmark_btn" [class.active]="bookmarkService.isBookmarked(item.id)" (click)="toggleBookmark(item, $event)">🔖</button>
+        @if (item.poster_path) {
+            <img [src]="'https://image.tmdb.org/t/p/w300' + item.poster_path" [alt]="item.title">
+        } @else {
+            <div class="no-poster">🎬</div>
+        }
+        <h3>{{item.title}}</h3>
+    </div>
+</ng-template>

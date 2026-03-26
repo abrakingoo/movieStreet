@@ -1,0 +1,62 @@
+@if(totalPages() > 1 && !isLoading()) {
+    <button (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1" class="nav_btn nav_btn_left">
+        ‹
+    </button>
+    <button (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()" class="nav_btn nav_btn_right">
+        ›
+    </button>
+}
+
+<div class="category_container">
+    <h1 class="category_title">{{categoryTitle}}</h1>
+    
+    <div class="filters">
+        <select [ngModel]="sortBy()" (ngModelChange)="sortBy.set($event); loadCategory(currentCategory, 1)" class="filter_select">
+            <option value="popularity.desc">Most Popular</option>
+            <option value="vote_average.desc">Highest Rated</option>
+            <option value="release_date.desc">Newest First</option>
+            <option value="release_date.asc">Oldest First</option>
+        </select>
+    </div>
+    
+    @if(isLoading()) {
+        <div class="results_grid">
+            @for(i of [1,2,3,4,5,6]; track i){
+                <div class="skeleton_card">
+                    <div class="skeleton_poster"></div>
+                    <div class="skeleton_info">
+                        <div class="skeleton_card_title"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    } @else {
+        <div class="results_grid">
+            @for(item of results(); track item.id){
+                <div class="content_card" (click)="viewDetails(item)">
+                    <button class="bookmark_btn" [class.active]="bookmarkService.isBookmarked(item.id)" (click)="toggleBookmark(item, $event)">🔖</button>
+                    @if (item.poster_path) {
+                        <img [src]="'https://image.tmdb.org/t/p/w500' + item.poster_path" [alt]="item.title" class="content_poster">
+                    } @else {
+                        <div class="content_poster no-poster">🎬</div>
+                    }
+                    <div class="content_info">
+                        <h3 class="card_title">{{item.title}}</h3>
+                        <div class="content_meta">
+                            <span class="rating">⭐ {{item.vote_average.toFixed(1)}}</span>
+                            <span class="year">{{item.release_date ? item.release_date.split('-')[0] : 'N/A'}}</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        @if(totalPages() > 1) {
+            <div class="pagination">
+                <button (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1" class="page_btn">Previous</button>
+                <span class="page_info">Page {{currentPage()}} of {{totalPages()}}</span>
+                <button (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()" class="page_btn">Next</button>
+            </div>
+        }
+    }
+</div>

@@ -1,0 +1,102 @@
+@if(totalPages() > 1 && !isLoading()) {
+    <button (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1" class="nav_btn nav_btn_left" aria-label="Previous page">
+        ‹
+    </button>
+    <button (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()" class="nav_btn nav_btn_right" aria-label="Next page">
+        ›
+    </button>
+}
+
+<div class="search_container">
+    <h1 class="search_title">Search Results</h1>
+    
+    @if(!isLoading() && allResults().length > 0) {
+        <div class="filters_bar">
+            <div class="filter_group">
+                <label for="sortBy">Sort by:</label>
+                <select id="sortBy" [(ngModel)]="sortBy" class="filter_select">
+                    <option value="popularity">Popularity</option>
+                    <option value="rating">Rating</option>
+                    <option value="title">Title</option>
+                    <option value="year">Year</option>
+                </select>
+            </div>
+            
+            <div class="filter_group">
+                <label for="filterType">Type:</label>
+                <select id="filterType" [(ngModel)]="filterType" class="filter_select">
+                    <option value="all">All</option>
+                    <option value="movie">Movies</option>
+                    <option value="tv">TV Shows</option>
+                </select>
+            </div>
+            
+            <div class="filter_group">
+                <label for="minRating">Min Rating:</label>
+                <select id="minRating" [(ngModel)]="minRating" class="filter_select">
+                    <option [value]="0">All</option>
+                    <option [value]="5">5+</option>
+                    <option [value]="6">6+</option>
+                    <option [value]="7">7+</option>
+                    <option [value]="8">8+</option>
+                </select>
+            </div>
+            
+            <div class="results_count">
+                {{searchResults().length}} results
+            </div>
+        </div>
+    }
+    
+    @if(isLoading()) {
+        <div class="search_results_grid" role="list" aria-label="Loading search results">
+            @for(i of [1,2,3,4,5,6]; track i){
+                <div class="skeleton_card" role="listitem" aria-label="Loading result">
+                    <div class="skeleton_poster"></div>
+                    <div class="skeleton_info">
+                        <div class="skeleton_card_title"></div>
+                        <div class="skeleton_card_meta"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    } @else {
+        <div class="search_results_grid" role="list" aria-label="Search results">
+            @for(movie of searchResults(); track movie.id){
+                <div class="movie_card" (click)="viewDetails(movie)" (keydown.enter)="viewDetails(movie)" (keydown.space)="viewDetails(movie)" role="listitem" tabindex="0" [attr.aria-label]="('name' in movie ? movie.name : movie.title) + ', ' + movie.media_type">
+                    <button class="bookmark_btn" [class.active]="bookmarkService.isBookmarked(movie.id)" (click)="toggleBookmark(movie, $event)" [attr.aria-label]="bookmarkService.isBookmarked(movie.id) ? 'Remove from bookmarks' : 'Add to bookmarks'">🔖</button>
+                    @if(movie.poster_path) {
+                        <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" [alt]="('name' in movie ? movie.name : movie.title) + ' poster'" class="movie_poster">
+                    } @else {
+                        <div class="movie_poster no-poster" role="img" [attr.aria-label]="('name' in movie ? movie.name : movie.title) + ' - no poster available'">🎬</div>
+                    }
+                    <span class="media_badge" [class.tv_badge]="movie.media_type === 'tv'" aria-label="Media type">
+                        {{movie.media_type === 'tv' ? 'TV' : 'Movie'}}
+                    </span>
+                    <div class="movie_info">
+                        <h3 class="card_title">{{'name' in movie ? movie.name : movie.title}}</h3>
+                        <div class="movie_meta">
+                            <span class="rating" [attr.aria-label]="'Rating ' + movie.vote_average.toFixed(1) + ' out of 10'">⭐ {{movie.vote_average.toFixed(1)}}</span>
+                            <span class="year" [attr.aria-label]="'Release year ' + ('first_air_date' in movie ? movie.first_air_date : movie.release_date | slice:0:4)">{{'first_air_date' in movie ? movie.first_air_date : movie.release_date | slice:0:4}}</span>
+                        </div>
+                    </div>
+                </div>
+            } @empty {
+                <p class="no_results" role="status">No results found. Try adjusting your filters.</p>
+            }
+        </div>
+        @if(totalPages() > 1) {
+            <div class="pagination" role="navigation" aria-label="Search results pagination">
+                <button (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1" class="page_btn" aria-label="Go to previous page">Previous</button>
+                <span class="page_info" aria-current="page">Page {{currentPage()}} of {{totalPages()}}</span>
+                <button (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()" class="page_btn" aria-label="Go to next page">Next</button>
+            </div>
+        }
+        @if(isLoadingMore()) {
+            <div class="loading_more">
+                <div class="spinner"></div>
+                <p>Loading more results...</p>
+            </div>
+        }
+    }
+</div>

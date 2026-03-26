@@ -1,0 +1,47 @@
+<div class="trending_container">
+    <div class="image_frame" (mouseenter)="stopAutoPlay()" (mouseleave)="startAutoPlay()" role="region" aria-label="Featured trending movies carousel">
+        @if(isLoading()){
+            <div class="skeleton_hero" role="status" aria-label="Loading featured content"></div>
+            <div class="movie_details">
+                <div class="skeleton_title"></div>
+                <div class="skeleton_text"></div>
+                <div class="skeleton_text"></div>
+            </div>
+        } @else if(hasError()){
+            <div class="error_state" role="alert">
+                <p>Failed to load trending movies. Please try again later.</p>
+            </div>
+        } @else if(movies().length > 0){
+            @for(movie of movies(); track movie.id; let i = $index) {
+                <img 
+                    [src]="'https://image.tmdb.org/t/p/original' + movie.backdrop_path" 
+                    [alt]="movie.title + ' backdrop image'" 
+                    class="trending_image"
+                    [class.active]="i === currentIndex()">
+                
+                @if(i === currentIndex()) {
+                    <div class="movie_details">
+                        <h2 class="movie_title">{{movie.title}}</h2>
+                        <p class="movie_description">{{movie.overview}}</p>
+                        <div class="carousel_controls" role="group" aria-label="Carousel navigation">
+                            <button 
+                                (click)="prevMovie()" 
+                                class="carousel_btn"
+                                aria-label="Previous movie in carousel">
+                                ‹
+                            </button>
+                            <button 
+                                (click)="nextMovie()" 
+                                class="carousel_btn"
+                                aria-label="Next movie in carousel">
+                                ›
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
+    
+    <app-movie-grid />
+</div>
