@@ -1,4 +1,10 @@
 # MovieStreet
+<img width="1917" height="1050" alt="upcomingPage" src="https://github.com/user-attachments/assets/066b694c-8678-4226-9173-992614750391" />
+<img width="1917" height="1050" alt="trendingPage" src="https://github.com/user-attachments/assets/9f1b48f8-040d-45e8-b8a5-12704122d55f" />
+<img width="1917" height="1050" alt="myListPage" src="https://github.com/user-attachments/assets/07c38cfe-d1cb-489f-a733-c0590cf8eaf6" />
+<img width="1917" height="1050" alt="moodPickerPage" src="https://github.com/user-attachments/assets/1dc72289-45e2-426c-aa16-419d5fd2562e" />
+<img width="1917" height="1050" alt="homePage" src="https://github.com/user-attachments/assets/26afe38a-eefd-423f-af1d-8f97bdaa9348" />
+
 
 A full-featured movie and TV series discovery application built with Angular 21. It allows users to browse trending content, explore by category or genre, manage a personal watchlist, and get mood-based recommendations — all powered by the TMDB API.
 
