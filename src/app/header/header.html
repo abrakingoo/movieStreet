@@ -1,0 +1,50 @@
+<header role="banner">
+    <div class="logo_container" (click)="goHome()" (keydown.enter)="goHome()" (keydown.space)="goHome()" style="cursor: pointer;" tabindex="0" role="button" aria-label="Go to home page">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="logo" aria-hidden="true">
+            <defs>
+                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#4ecdc4;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <circle cx="25" cy="25" r="23" fill="url(#logoGrad)" opacity="0.2"/>
+            <path d="M20 15 L20 35 L32 25 Z" fill="url(#logoGrad)"/>
+            <rect x="35" y="18" width="3" height="14" rx="1.5" fill="url(#logoGrad)"/>
+            <rect x="40" y="18" width="3" height="14" rx="1.5" fill="url(#logoGrad)"/>
+        </svg>
+        <h1>Movie Street</h1>
+    </div>
+    <div class="search_box" role="search">
+        <input type="text" placeholder="Search movies and TV shows..." class="search_input" #searchTerm [value]="searchQuery" (keyup.enter)="handleSearch(searchTerm.value)" aria-label="Search for movies and TV shows">
+        <button class="search_btn" (click)="handleSearch(searchTerm.value)" aria-label="Submit search">🔍</button>
+    </div>
+    <button class="theme_toggle" (click)="themeService.toggle()" [attr.aria-label]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+        @if(themeService.theme() === 'dark') { ☀️ } @else { 🌙 }
+    </button>
+    <button class="hamburger" (click)="toggleMobileMenu()" [class.active]="showMobileMenu()" aria-label="Toggle navigation menu" [attr.aria-expanded]="showMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <nav [class.mobile-open]="showMobileMenu()" role="navigation" aria-label="Main navigation">
+        <button class="close_nav" (click)="toggleMobileMenu()" aria-label="Close navigation menu">→</button>
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="goHome(); showMobileMenu.set(false)">Home</a>
+        <a routerLink="/trending" routerLinkActive="active" (click)="showMobileMenu.set(false)">Trending</a>
+        <a routerLink="/movies" routerLinkActive="active" (click)="showMobileMenu.set(false)">Movies</a>
+        <a routerLink="/series" routerLinkActive="active" (click)="showMobileMenu.set(false)">TV Series</a>
+        <div class="genre_dropdown">
+            <a (click)="toggleGenreDropdown()" (keydown.enter)="toggleGenreDropdown()" (keydown.space)="toggleGenreDropdown()" class="genre_link" tabindex="0" role="button" [attr.aria-expanded]="showGenreDropdown()" aria-label="Genres menu">Genres ▾</a>
+            @if(showGenreDropdown()) {
+                <div class="dropdown_menu" role="menu">
+                    @for(genre of genres; track genre.id) {
+                        <a (click)="selectGenre(genre.id, genre.name)" (keydown.enter)="selectGenre(genre.id, genre.name)" class="dropdown_item" tabindex="0" role="menuitem">{{genre.name}}</a>
+                    }
+                </div>
+            }
+        </div>
+        <a routerLink="/collections" routerLinkActive="active" (click)="showMobileMenu.set(false)">Collections</a>
+        <a routerLink="/mood" routerLinkActive="active" (click)="showMobileMenu.set(false)">Mood Picks</a>
+        <a routerLink="/upcoming" routerLinkActive="active" (click)="showMobileMenu.set(false)">Upcoming</a>
+        <a routerLink="/watchlist" routerLinkActive="active" (click)="showMobileMenu.set(false)">My List</a>
+    </nav>
+</header>

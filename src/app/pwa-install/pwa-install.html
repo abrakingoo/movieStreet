@@ -1,0 +1,15 @@
+@if(showPrompt()) {
+    <div class="install-prompt">
+        <div class="install-content">
+            <span class="install-icon">📱</span>
+            <div class="install-text">
+                <strong>Install Movie Street</strong>
+                <p>Get quick access from your home screen</p>
+            </div>
+            <div class="install-actions">
+                <button class="install-btn" (click)="installApp()">Install</button>
+                <button class="dismiss-btn" (click)="dismissPrompt()">✕</button>
+            </div>
+        </div>
+    </div>
+}
