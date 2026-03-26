@@ -1,0 +1,25 @@
+<div class="collections-container">
+  <h1>Movie Collections</h1>
+  <p class="subtitle">Explore popular movie franchises and series</p>
+  
+  <div class="collections-grid">
+    @for (collection of collections; track collection.id) {
+      <div class="collection-card" (click)="viewCollection(collection.id)">
+        @if (collection.poster) {
+          <img [src]="getImageUrl(collection.poster)" [alt]="collection.name" loading="lazy">
+        } @else {
+          <div class="collection-poster no-poster">📁</div>
+        }
+        <div class="collection-info">
+          <h3>{{ collection.name }}</h3>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">← Previous</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next →</button>
+  </div>
+</div>

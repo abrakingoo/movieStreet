@@ -1,0 +1,54 @@
+<div class="watchlist_page">
+    <h1>My List</h1>
+    @if(bookmarkService.bookmarks().length === 0) {
+        <div class="empty_state">
+            <p>📚 Your watchlist is empty</p>
+            <p class="subtitle">Start adding movies and TV shows you want to watch!</p>
+        </div>
+    } @else {
+        <div class="filters_bar">
+            <div class="filter_group">
+                <label for="sortBy">Sort by:</label>
+                <select id="sortBy" [(ngModel)]="sortBy" class="filter_select">
+                    <option value="added">Recently Added</option>
+                    <option value="title">Title</option>
+                    <option value="rating">Rating</option>
+                    <option value="year">Year</option>
+                </select>
+            </div>
+            
+            <div class="filter_group">
+                <label for="filterType">Type:</label>
+                <select id="filterType" [(ngModel)]="filterType" class="filter_select">
+                    <option value="all">All</option>
+                    <option value="movie">Movies</option>
+                    <option value="tv">TV Shows</option>
+                </select>
+            </div>
+            
+            <div class="results_count">
+                {{filteredBookmarks().length}} items
+            </div>
+        </div>
+        
+        <div class="watchlist_grid">
+            @for(item of filteredBookmarks(); track item.id) {
+                <div class="card" (click)="viewDetails(item)">
+                    <button class="bookmark_btn active" (click)="removeBookmark(item, $event)">🔖</button>
+                    <img [src]="'https://image.tmdb.org/t/p/w300' + item.poster_path" [alt]="item.title">
+                    <div class="card_info">
+                        <h3>{{item.title}}</h3>
+                        <div class="card_meta">
+                            <span class="rating">⭐ {{item.vote_average.toFixed(1)}}</span>
+                            <span class="badge" [class.movie]="item.media_type === 'movie'" [class.tv]="item.media_type === 'tv'">
+                                {{item.media_type === 'movie' ? 'Movie' : 'TV'}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            } @empty {
+                <p class="no_results">No items match your filters.</p>
+            }
+        </div>
+    }
+</div>

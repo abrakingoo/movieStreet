@@ -1,0 +1,26 @@
+<div class="collection-details">
+  @if (collection(); as data) {
+    <button class="back-btn" (click)="goBack()">← Back to Collections</button>
+    
+    <div class="collection-header">
+      <h1>{{ data.name }}</h1>
+      <p>{{ data.overview }}</p>
+    </div>
+    
+    <div class="movies-grid">
+      @for (movie of data.parts; track movie.id) {
+        <div class="movie-card" (click)="viewMovie(movie.id)">
+          @if (movie.poster_path) {
+            <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title" loading="lazy">
+          } @else {
+            <div class="movie-poster no-poster">🎬</div>
+          }
+          <div class="movie-info">
+            <h3>{{ movie.title }}</h3>
+            <p class="year">{{ getYear(movie.release_date) }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

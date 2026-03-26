@@ -1,0 +1,386 @@
+@if(details(); as item) {
+    <div class="details_page">
+        <button class="back_btn" (click)="goBack()">← Back</button>
+        <div class="top_actions">
+            <button class="action_btn" (click)="openRatingModal()" title="Rate & Review">
+                @if(userReview()) {
+                    ⭐ {{userReview()!.rating}}
+                } @else {
+                    ⭐ Rate
+                }
+            </button>
+            <button class="action_btn share_btn" (click)="toggleShareMenu()" title="Share">
+                🔗 Share
+            </button>
+            @if(showShareMenu()) {
+                <div class="share_menu">
+                    <button (click)="shareMovie()">📱 Share</button>
+                    <button (click)="shareOnTwitter()">🐦 Twitter</button>
+                    <button (click)="shareOnFacebook()">📘 Facebook</button>
+                    <button (click)="shareOnWhatsApp()">💬 WhatsApp</button>
+                </div>
+            }
+            <button class="bookmark_icon" [class.active]="isBookmarked()" (click)="toggleBookmark()">
+                🔖
+            </button>
+        </div>
+        <div class="hero_section" [style.background-image]="'linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.9)), url(https://image.tmdb.org/t/p/original' + item.backdrop_path + ')'">
+            <div class="hero_content">
+                <img [src]="'https://image.tmdb.org/t/p/w500' + item.poster_path" [alt]="item.title" class="poster">
+                <div class="info">
+                    <h1>{{item.title}}</h1>
+                    <div class="meta">
+                        <span class="rating">⭐ {{item.vote_average.toFixed(1)}}</span>
+                        <span>{{item.release_date.split('-')[0]}}</span>
+                        @if('runtime' in item && item.runtime) {
+                            <span>{{item.runtime}} min</span>
+                        } @else if('number_of_seasons' in item) {
+                            <span>{{item.number_of_seasons}} seasons</span>
+                        }
+                        @if('budget' in item && item.budget > 0) {
+                            <span>💰 ${{(item.budget / 1000000).toFixed(1)}}M</span>
+                        }
+                    </div>
+                    @if(item.tagline) {
+                        <p class="tagline">{{item.tagline}}</p>
+                    }
+                    <p class="overview">{{item.overview}}</p>
+                    <div class="genres">
+                        @for(genre of item.genres; track genre.id) {
+                            <span class="genre">{{genre.name}}</span>
+                        }
+                    </div>
+                    <div class="hero_buttons">
+                        @if(isTVShow() && 'number_of_seasons' in item) {
+                            <button class="episodes_btn" (click)="toggleEpisodes()">
+                                📺 {{showEpisodes() ? 'Hide' : 'View'}} Episodes
+                            </button>
+                        }
+                        @if(trailerUrl()) {
+                            <button class="trailer_btn" (click)="toggleTrailer()">
+                                🎬 Watch Trailer
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if(showTrailer() && trailerUrl()) {
+            <div class="trailer_modal" (click)="toggleTrailer()">
+                <div class="trailer_container" (click)="$event.stopPropagation()">
+                    <button class="close_btn" (click)="toggleTrailer()">✕</button>
+                    <iframe 
+                        [src]="trailerUrl()" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                        loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin">
+                    </iframe>
+                    @if(rawTrailerUrl()) {
+                        <a [href]="rawTrailerUrl()" target="_blank" rel="noopener noreferrer" class="youtube-fallback">
+                            Watch on YouTube
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+
+        @if(isTVShow() && showEpisodes() && details(); as show) {
+            <div class="episodes_section">
+                <h2>Episodes</h2>
+                <div class="season_selector">
+                    @for(season of seasonNumbers(); track season) {
+                        <button 
+                            class="season_btn" 
+                            [class.active]="selectedSeason() === season"
+                            (click)="changeSeason(season)">
+                            Season {{season}}
+                        </button>
+                    }
+                </div>
+                
+                @if(seasonDetails()) {
+                    <div class="season_progress_bar">
+                        <div class="progress_fill" [style.width.%]="getSeasonProgress(selectedSeason())"></div>
+                        <span class="progress_text">{{getSeasonProgress(selectedSeason()).toFixed(0)}}% Complete</span>
+                    </div>
+                    
+                    <div class="episodes_list">
+                        @for(episode of seasonDetails().episodes; track episode.id) {
+                            <div class="episode_card" [class.watched]="isEpisodeWatched(episode.episode_number)">
+                                <div class="episode_poster">
+                                    @if(episode.still_path) {
+                                        <img [src]="'https://image.tmdb.org/t/p/w300' + episode.still_path" [alt]="episode.name">
+                                    } @else {
+                                        <div class="no_poster">🎬</div>
+                                    }
+                                    <button 
+                                        class="watch_toggle"
+                                        [class.watched]="isEpisodeWatched(episode.episode_number)"
+                                        (click)="toggleEpisodeWatched(episode)">
+                                        {{isEpisodeWatched(episode.episode_number) ? '✓' : '+'}}
+                                    </button>
+                                </div>
+                                <div class="episode_info">
+                                    <h4>{{episode.episode_number}}. {{episode.name}}</h4>
+                                    <p class="episode_meta">
+                                        <span>⭐ {{episode.vote_average.toFixed(1)}}</span>
+                                        <span>•</span>
+                                        <span>{{episode.air_date}}</span>
+                                        @if(episode.runtime) {
+                                            <span>•</span>
+                                            <span>{{episode.runtime}}min</span>
+                                        }
+                                    </p>
+                                    <p class="episode_overview">{{episode.overview}}</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        @if(isMovie() && details(); as item) {
+            <div class="box_office_section">
+                <h2>Box Office</h2>
+                <div class="info_grid">
+                    @if('budget' in item && item.budget > 0) {
+                        <div class="info_item">
+                            <span class="info_label">Budget</span>
+                            <span class="info_value">${{(item.budget / 1000000).toFixed(1)}}M</span>
+                        </div>
+                    }
+                    @if('revenue' in item && item.revenue > 0) {
+                        <div class="info_item">
+                            <span class="info_label">Revenue</span>
+                            <span class="info_value">${{(item.revenue / 1000000).toFixed(1)}}M</span>
+                        </div>
+                    }
+                    @if('revenue' in item && 'budget' in item && item.revenue > 0 && item.budget > 0) {
+                        <div class="info_item">
+                            <span class="info_label">Profit</span>
+                            <span class="info_value" [class.positive]="item.revenue > item.budget">
+                                ${{((item.revenue - item.budget) / 1000000).toFixed(1)}}M
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if(details() && ('production_countries' in details()! || 'spoken_languages' in details()!)) {
+            <div class="additional_info_section">
+                <h2>Additional Information</h2>
+                <div class="info_grid">
+                    @if('status' in details()!) {
+                        <div class="info_item">
+                            <span class="info_label">Status</span>
+                            <span class="info_value">{{details()!.status}}</span>
+                        </div>
+                    }
+                    @if('original_language' in details()!) {
+                        <div class="info_item">
+                            <span class="info_label">Original Language</span>
+                            <span class="info_value">{{details()!.original_language.toUpperCase()}}</span>
+                        </div>
+                    }
+                    @if('production_countries' in details()! && details()!.production_countries.length > 0) {
+                        <div class="info_item">
+                            <span class="info_label">Production Countries</span>
+                            <span class="info_value">{{getProductionCountries()}}</span>
+                        </div>
+                    }
+                    @if('production_companies' in details()! && details()!.production_companies.length > 0) {
+                        <div class="info_item full_width">
+                            <span class="info_label">Production Companies</span>
+                            <div class="companies_list">
+                                @for(company of details()!.production_companies.slice(0, 6); track company.id) {
+                                    @if(company.logo_path) {
+                                        <div class="company_item">
+                                            <img [src]="'https://image.tmdb.org/t/p/w92' + company.logo_path" [alt]="company.name" [title]="company.name">
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if(watchProviders()) {
+            <div class="watch_providers_section">
+                <h2>Where to Watch</h2>
+                <div class="providers_container">
+                    @if(watchProviders().flatrate) {
+                        <div class="provider_group">
+                            <h3>Stream</h3>
+                            <div class="provider_logos">
+                                @for(provider of watchProviders().flatrate; track provider.provider_id) {
+                                    <div class="provider_item">
+                                        <img [src]="'https://image.tmdb.org/t/p/original' + provider.logo_path" [alt]="provider.provider_name">
+                                        <span>{{provider.provider_name}}</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    @if(watchProviders().rent) {
+                        <div class="provider_group">
+                            <h3>Rent</h3>
+                            <div class="provider_logos">
+                                @for(provider of watchProviders().rent; track provider.provider_id) {
+                                    <div class="provider_item">
+                                        <img [src]="'https://image.tmdb.org/t/p/original' + provider.logo_path" [alt]="provider.provider_name">
+                                        <span>{{provider.provider_name}}</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    @if(watchProviders().buy) {
+                        <div class="provider_group">
+                            <h3>Buy</h3>
+                            <div class="provider_logos">
+                                @for(provider of watchProviders().buy; track provider.provider_id) {
+                                    <div class="provider_item">
+                                        <img [src]="'https://image.tmdb.org/t/p/original' + provider.logo_path" [alt]="provider.provider_name">
+                                        <span>{{provider.provider_name}}</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if(cast().length > 0) {
+            <div class="cast_section">
+                <h2>Cast</h2>
+                <div class="cast_grid">
+                    @for(actor of cast(); track actor.id) {
+                        <div class="cast_card">
+                            @if(actor.profile_path) {
+                                <img [src]="'https://image.tmdb.org/t/p/w185' + actor.profile_path" [alt]="actor.name">
+                            } @else {
+                                <div class="no_photo">👤</div>
+                            }
+                            <h3>{{actor.name}}</h3>
+                            <p>{{actor.character}}</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if(reviews().length > 0) {
+            <div class="reviews_section">
+                <h2>User Reviews</h2>
+                @if(userReview()) {
+                    <div class="review_card user_review">
+                        <div class="review_header">
+                            <div class="reviewer_info">
+                                <div class="avatar_placeholder">👤</div>
+                                <div>
+                                    <h3>Your Review</h3>
+                                    <span class="review_rating">⭐ {{userReview()!.rating}}/10</span>
+                                </div>
+                            </div>
+                            <button class="edit_review_btn" (click)="openRatingModal()">✏️ Edit</button>
+                        </div>
+                        <p class="review_content">{{userReview()!.review}}</p>
+                    </div>
+                }
+                @for(review of reviews(); track review.id) {
+                    <div class="review_card">
+                        <div class="review_header">
+                            <div class="reviewer_info">
+                                @if(review.author_details.avatar_path) {
+                                    <img [src]="review.author_details.avatar_path.startsWith('/https') ? review.author_details.avatar_path.substring(1) : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path" [alt]="review.author" class="avatar">
+                                } @else {
+                                    <div class="avatar_placeholder">👤</div>
+                                }
+                                <div>
+                                    <h3>{{review.author}}</h3>
+                                    @if(review.author_details.rating) {
+                                        <span class="review_rating">⭐ {{review.author_details.rating}}/10</span>
+                                    }
+                                </div>
+                            </div>
+                            <span class="review_date">{{review.created_at | slice:0:10}}</span>
+                        </div>
+                        <p class="review_content" [class.expanded]="showAllReviews()">{{review.content}}</p>
+                    </div>
+                }
+                @if(reviews().length >= 5) {
+                    <button class="show_more_btn" (click)="showAllReviews.set(!showAllReviews())">{{showAllReviews() ? 'Show Less' : 'Show More Reviews'}}</button>
+                }
+            </div>
+        }
+
+        @if(similar().length > 0) {
+            <div class="similar_section">
+                <h2>Similar Movies</h2>
+                <div class="similar_grid">
+                    @for(item of similar(); track item.id) {
+                        <div class="similar_card" (click)="viewDetails(item)">
+                            <img [src]="'https://image.tmdb.org/t/p/w300' + item.poster_path" [alt]="item.title">
+                            <h3>{{item.title}}</h3>
+                            <span class="similar_rating">⭐ {{item.vote_average.toFixed(1)}}</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="recommendations_section">
+            <h2>You May Also Like</h2>
+            <div class="recommendations_grid">
+                @for(rec of recommendations(); track rec.id){
+                    <div class="rec_card" (click)="viewDetails(rec)">
+                        <img [src]="'https://image.tmdb.org/t/p/w300' + rec.poster_path" [alt]="rec.title">
+                        <h3>{{rec.title}}</h3>
+                        <span class="rec_rating">⭐ {{rec.vote_average.toFixed(1)}}</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@if(showRatingModal()) {
+    <div class="modal_overlay" (click)="closeRatingModal()">
+        <div class="rating_modal" (click)="$event.stopPropagation()">
+            <button class="modal_close" (click)="closeRatingModal()">✕</button>
+            <h2>Rate & Review</h2>
+            <div class="rating_stars">
+                @for(star of [1,2,3,4,5,6,7,8,9,10]; track star) {
+                    <button 
+                        class="star_btn" 
+                        [class.active]="star <= userRating()"
+                        (click)="setRating(star)">
+                        ⭐
+                    </button>
+                }
+            </div>
+            <p class="rating_value">{{userRating()}}/10</p>
+            <textarea 
+                class="review_textarea" 
+                placeholder="Write your review (optional)..."
+                [value]="userReviewText()"
+                (input)="userReviewText.set($any($event.target).value)"
+                rows="6"></textarea>
+            <div class="modal_actions">
+                @if(userReview()) {
+                    <button class="delete_btn" (click)="deleteUserReview()">Delete</button>
+                }
+                <button class="cancel_btn" (click)="closeRatingModal()">Cancel</button>
+                <button class="submit_btn" (click)="submitReview()" [disabled]="userRating() === 0">Submit</button>
+            </div>
+        </div>
+    </div>
+}

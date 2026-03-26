@@ -1,0 +1,78 @@
+<div class="chat_container">
+  <div class="chat_header">
+    <h2>Movie Assistant</h2>
+    <button class="reset_btn" (click)="reset()">↻ Reset</button>
+  </div>
+
+  <div class="quick_links">
+    <button class="quick_link" (click)="selectOption('Action')">Action</button>
+    <button class="quick_link" (click)="selectOption('Comedy')">Comedy</button>
+    <button class="quick_link" (click)="selectOption('Horror')">Horror</button>
+    <button class="quick_link" (click)="selectOption('Romance')">Romance</button>
+    <button class="quick_link" (click)="selectOption('Sci-Fi')">Sci-Fi</button>
+    <button class="quick_link" (click)="selectOption('Drama')">Drama</button>
+    <button class="quick_link" (click)="selectOption('Animation')">Animation</button>
+  </div>
+
+  <div class="chat_messages" #chatMessages>
+    @for (msg of messages(); track $index) {
+      <div [class]="msg.isBot ? 'message bot' : 'message user'">
+        <div class="message_bubble">
+          <p>{{ msg.text }}</p>
+          @if (msg.options && !isLoading()) {
+            <div class="options">
+              @for (option of msg.options; track option) {
+                <button class="option_btn" (click)="selectOption(option)">{{ option }}</button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if (isLoading()) {
+      <div class="message bot">
+        <div class="message_bubble typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="chat_input">
+    <input 
+      type="text" 
+      placeholder="Type your mood or message..." 
+      [value]="userInput()"
+      (input)="userInput.set($any($event.target).value)"
+      (keyup.enter)="sendMessage()"
+      #messageInput
+    >
+    <button (click)="sendMessage()">➤</button>
+  </div>
+
+  @if (showRecommendations()) {
+    <div class="recommendations_section">
+      @if (isLoadingMore()) {
+        <div class="loading_spinner">
+          <div class="spinner"></div>
+          <p>Loading more movies...</p>
+        </div>
+      }
+      <div class="recommendations_grid">
+        @for (item of recommendations(); track item.id) {
+          <div class="movie_card" (click)="viewDetails(item)">
+            @if (item.poster_path) {
+              <img [src]="'https://image.tmdb.org/t/p/w500' + item.poster_path" [alt]="getTitle(item)" loading="lazy">
+            } @else {
+              <div class="no-poster">🎬</div>
+            }
+            <div class="card_info">
+              <h4>{{ getTitle(item) }}</h4>
+              <div class="rating">⭐ {{ item.vote_average.toFixed(1) }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

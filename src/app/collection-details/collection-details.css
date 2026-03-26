@@ -1,0 +1,96 @@
+.collection-details {
+  padding: 6rem 2rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.back-btn {
+  background: var(--card-hover);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+.collection-header {
+  margin-bottom: 2rem;
+}
+
+.collection-header h1 {
+  color: var(--text-primary);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.collection-header p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.movie-card {
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.movie-card:hover {
+  transform: translateY(-8px);
+}
+
+.movie-card img,
+.movie-poster {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+  background-color: #1a1a1a;
+}
+
+.no-poster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2a2a2a;
+  font-size: 3rem;
+  color: #444;
+}
+
+.movie-info {
+  padding: 1rem;
+}
+
+.movie-info h3 {
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.movie-info .year {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .collection-details {
+    padding: 5rem 1rem 1rem;
+  }
+  
+  .collection-header h1 {
+    font-size: 2rem;
+  }
+  
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+}
