@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "my-angular-app": {
+    "moviestreet": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -70,10 +70,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "my-angular-app:build:production"
+              "buildTarget": "moviestreet:build:production"
             },
             "development": {
-              "buildTarget": "my-angular-app:build:development"
+              "buildTarget": "moviestreet:build:development"
             }
           },
           "defaultConfiguration": "development"

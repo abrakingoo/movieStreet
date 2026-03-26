@@ -78,7 +78,7 @@ The application is server-side rendered (SSR) via Angular Universal and ships as
 
 ```bash
 git clone <repository-url>
-cd my-angular-app
+cd moviestreet
 ```
 
 2. Install dependencies:
@@ -244,10 +244,10 @@ ng e2e
 After building, serve the application with server-side rendering using the Express server:
 
 ```bash
-npm run serve:ssr:my-angular-app
+npm run serve:ssr:moviestreet
 ```
 
-This runs the compiled SSR bundle at `dist/my-angular-app/server/server.mjs`, which handles both API proxying and pre-rendered HTML delivery.
+This runs the compiled SSR bundle at `dist/moviestreet/server/server.mjs`, which handles both API proxying and pre-rendered HTML delivery.
 
 ---
 

@@ -145,10 +145,10 @@ maxAge: '1y'
 ### Check Minification
 ```bash
 # JavaScript
-head -c 200 dist/my-angular-app/browser/main-*.js
+head -c 200 dist/moviestreet/browser/main-*.js
 
 # CSS
-head -c 200 dist/my-angular-app/browser/styles-*.css
+head -c 200 dist/moviestreet/browser/styles-*.css
 ```
 
 ### Check Bundle Sizes

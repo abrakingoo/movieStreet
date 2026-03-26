@@ -225,7 +225,7 @@ curl http://localhost:4200 | grep "og:"
 
 **Test Security Headers:**
 ```bash
-npm run serve:ssr:my-angular-app
+npm run serve:ssr:moviestreet
 curl -I http://localhost:4000
 ```
 
