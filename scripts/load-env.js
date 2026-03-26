@@ -10,25 +10,20 @@ if (!fs.existsSync(targetFile) && fs.existsSync(templateFile)) {
   fs.copyFileSync(templateFile, targetFile);
 }
 
-let token = '';
-let openAiKey = '';
+let token = process.env['TMDB_BEARER_TOKEN'] || '';
+let openAiKey = process.env['OPENAI_API_KEY'] || '';
 
-if (fs.existsSync(envFile)) {
+if (!token && fs.existsSync(envFile)) {
   const envContent = fs.readFileSync(envFile, 'utf8');
   const tmdbMatch = envContent.match(/TMDB_BEARER_TOKEN=(.+)/);
-  if (tmdbMatch) {
-    token = tmdbMatch[1].trim();
-  }
+  if (tmdbMatch) token = tmdbMatch[1].trim();
   const openAiMatch = envContent.match(/OPENAI_API_KEY=(.+)/);
-  if (openAiMatch) {
-    openAiKey = openAiMatch[1].trim();
-  }
+  if (openAiMatch) openAiKey = openAiMatch[1].trim();
 }
 
 if (!token) {
-  console.error('\x1b[31m%s\x1b[0m', '❌ Error: TMDB_BEARER_TOKEN not found in .env file');
-  console.log('\x1b[33m%s\x1b[0m', '⚠️  Please copy .env.example to .env and add your TMDB API token');
-  console.log('   Run: cp .env.example .env');
+  console.error('\x1b[31m%s\x1b[0m', '❌ Error: TMDB_BEARER_TOKEN is not set');
+  console.log('\x1b[33m%s\x1b[0m', '⚠️  Set it as an environment variable or add it to .env');
   process.exit(1);
 }
 
