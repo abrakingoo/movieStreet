@@ -6,6 +6,8 @@
 <img width="1917" height="1050" alt="homePage" src="https://github.com/user-attachments/assets/26afe38a-eefd-423f-af1d-8f97bdaa9348" />
 
 
+Live: https://moviestreet.onrender.com
+
 A full-featured movie and TV series discovery application built with Angular 21. It allows users to browse trending content, explore by category or genre, manage a personal watchlist, and get mood-based recommendations — all powered by the TMDB API.
 
 The application is server-side rendered (SSR) via Angular Universal and ships as a Progressive Web App (PWA) with offline support.
